@@ -1,0 +1,13 @@
+{
+  "name": "root",
+  "private": true,
+  "scripts": {
+    "build": "lerna run build --parallel",
+    "test": "lerna run test --stream",
+    "test:watch": "lerna run test:watch --stream",
+    "release": "npm run test && lerna publish"
+  },
+  "devDependencies": {
+    "lerna": "3.15.0"
+  }
+}
