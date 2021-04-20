@@ -1,10 +1,11 @@
 import { Component } from "react";
 import { View, Text } from "@tarojs/components";
-import Container from "@/components/Container";
 import "./index.less";
 
 class Index extends Component {
-  componentWillMount() {}
+  componentWillMount() {
+    console.log("componentWillMount");
+  }
 
   componentDidMount() {}
 
@@ -23,4 +24,5 @@ class Index extends Component {
   }
 }
 
-export default Container(Index);
+export default Index;
+// export default require('@/components/Container').default(Index);

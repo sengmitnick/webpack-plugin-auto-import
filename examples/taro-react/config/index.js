@@ -46,23 +46,24 @@ const config = {
         }
       }
     },
-    webpackChain(chain, webpack) {
-      chain.merge({
-        plugin: {
-          install: {
-            plugin: require('webpack-plugin-auto-import'),
-            args: [{
-              entry: [path.resolve(__dirname, '..', 'src/pages/index/index.tsx')],
-              template: (exportName, children) => `
-import Container from "@/components/Container";
-${children}
+//     webpackChain(chain, webpack) {
+//       chain.merge({
+//         plugin: {
+//           install: {
+//             plugin: require('webpack-plugin-auto-import'),
+//             args: [{
+//               entry: [path.resolve(__dirname, '..', 'src/pages/index/index.tsx')],
+//               template: (exportName, children) => `
+// import Container from "@/components/Container";
+// ${children}
 
-export default Container(${exportName});`,
-            }]
-          }
-        }
-      })
-    }
+// export default Container(${exportName});`,
+//               callExpressions: [{ identifier: "*.console.*", action: 'warn' }]
+//             }]
+//           }
+//         }
+//       })
+//     }
   },
   h5: {
     publicPath: '/',

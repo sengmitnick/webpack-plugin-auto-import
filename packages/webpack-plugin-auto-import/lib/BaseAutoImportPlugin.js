@@ -1,13 +1,19 @@
 const recast = require("recast")
     , estraverse = require("estraverse")
-    , {RawSource} = require("webpack-sources")
+    , { RawSource } = require("webpack-sources")
     , expressionNodeHandlers = require("./expressionNodeHandlers")
-    , {isJavaScriptAsset} = require("./utils")
+    , { isJavaScriptAsset } = require("./utils")
     , actionType = require("./actionType")
     , ResultLogger = require("./ResultLogger");
 
+
 function defaults(options) {
     return Object.assign({}, {
+        entry: [],
+        template: (exportName, children) => `
+${children}
+export default ${exportName};`,
+
         ignoreComment: "@ast-traversal-ignore",
         action: actionType.WARN,
         callExpressions: []
@@ -18,6 +24,7 @@ class AutoImportPlugin {
 
     constructor(options) {
         this.options = defaults(options);
+        this.options.entry = this.options.entry.map(f => `${f}.js`)
     }
 
     apply(compiler) {
@@ -28,6 +35,14 @@ class AutoImportPlugin {
         return actionType;
     }
 
+    _run() {}
+
+    _succeedEntry(compilation, callback) {
+        const files = [];
+        compilation.additionalChunkAssets.forEach((file) => files.push(file));
+        console.log(files);
+    }
+
     _optimizeChunkAssets(compilation, chunks, callback) {
         const files = [];
 
@@ -35,9 +50,13 @@ class AutoImportPlugin {
 
         compilation.additionalChunkAssets.forEach((file) => files.push(file));
 
+        const entryFiles = files.filter(file => this.options.entry.includes(file));
+
+        console.log(files);
+
         const result = ResultLogger.createWithCallback(callback);
 
-        files.forEach((filename) => this._handleCompilationAsset(compilation, filename, result));
+        entryFiles.forEach((filename) => this._handleCompilationAsset(compilation, filename, result));
 
         result.flushOutput();
     }
@@ -53,12 +72,16 @@ class AutoImportPlugin {
 
         const traversedAst = estraverse.replace(sourceAst.program, {
             enter: function (node, parent) {
+                console.log(node.type);
+                // if (node.type === "ExportDefaultDeclaration") {
+                //     console.log(JSON(node));
+                // }
 
                 if ((handler = expressionNodeHandlers[node.type])) {
 
                     const results = handler.handle(node, parent, options);
 
-                    results.forEach(({action, result}) => {
+                    results.forEach(({ action, result }) => {
                         switch (action) {
                             case actionType.REMOVE:
                                 this.remove();
@@ -67,13 +90,13 @@ class AutoImportPlugin {
                                     parent.operator = "";
                                 }
 
-                                logger.withRemovals({filename, result, node});
+                                logger.withRemovals({ filename, result, node });
                                 break;
                             case actionType.WARN:
-                                logger.withWarnings({filename, result, node});
+                                logger.withWarnings({ filename, result, node });
                                 break;
                             case actionType.ERROR:
-                                logger.withErrors({filename, result, node});
+                                logger.withErrors({ filename, result, node });
                                 break;
                         }
                     });

@@ -1,4 +1,4 @@
-const jsAssetRegExp = /\.(js|jsx)$/;
+const jsAssetRegExp = /\.(js|jsx|tx|tsx)$/;
 
 exports.isJavaScriptAsset = (filename) => jsAssetRegExp.test(filename);
 
