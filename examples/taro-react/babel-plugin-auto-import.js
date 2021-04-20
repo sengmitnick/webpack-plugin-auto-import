@@ -22,14 +22,16 @@ module.exports = function ({ types: t }) {
           // console.log(JSON.stringify(newNode));
           // console.log(JSON.stringify(path.parentPath.node));
           console.log(JSON.stringify(path.node));
-          path.parentPath.insertBefore(t.importDeclaration(
-            [t.importDefaultSpecifier(t.identifier('Container'))],
-            t.stringLiteral("@/components/Container")
-          ))
-          path.parentPath.skip();
-          // path.replaceWith(newNode);
+          // path.parentPath.insertBefore(t.importDeclaration(
+          //   [t.importDefaultSpecifier(t.identifier('Container'))],
+          //   t.stringLiteral("@/components/Container")
+          // ))
+          // path.parentPath.skip();
+          path.replaceWith({ "type": "ExportDefaultDeclaration", "declaration": { "type": "CallExpression", "callee": { "type": "MemberExpression", "object": { "type": "CallExpression", "callee": { "type": "Identifier", "name": "require" }, "arguments": [{ "type": "StringLiteral", "value": "@/components/Container" }] }, "property": { "type": "Identifier", "name": "default" }, "computed": false, "optional": null }, "arguments": [{ "type": "Identifier", "name": "Index" }] } });
           // path.skip();
-          // path.node = newNode;
+
+          // path.replaceWithSourceString(`export default require('@/components/Container').default(Index);`)
+          path.skip();
         }
 
       }
