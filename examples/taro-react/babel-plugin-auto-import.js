@@ -1,13 +1,13 @@
-const t = require("@babel/types");
+// const t = require("@babel/types");
 
-module.exports = function ({ types }) {
+module.exports = function ({ types: t }) {
   return {
     visitor: {
       ExportDefaultDeclaration: {
         exit(path, source) {
           const { filename, opts: { entry } } = source;
           if (!entry.includes(filename)) return;
-          const declaration = t.identifier(path.node.declaration.name)
+          // const declaration = t.identifier(path.node.declaration.name)
           // const newNode = t.exportDefaultDeclaration(
           //   t.callExpression(
           //     t.memberExpression(
@@ -18,11 +18,17 @@ module.exports = function ({ types }) {
           //     ),
           //     [declaration]
           //   ))
-          const newNode = t.exportDefaultDeclaration(declaration)
-          console.log(JSON.stringify(newNode));
-          // console.log(path.parentPath, newNode);
-          path.replaceWith(newNode);
-          path.skip();
+          // const newNode = t.exportDefaultDeclaration(declaration)
+          // console.log(JSON.stringify(newNode));
+          // console.log(JSON.stringify(path.parentPath.node));
+          console.log(JSON.stringify(path.node));
+          path.parentPath.insertBefore(t.importDeclaration(
+            [t.importDefaultSpecifier(t.identifier('Container'))],
+            t.stringLiteral("@/components/Container")
+          ))
+          path.parentPath.skip();
+          // path.replaceWith(newNode);
+          // path.skip();
           // path.node = newNode;
         }
 
