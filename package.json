@@ -5,9 +5,9 @@
     "build": "lerna run build --parallel",
     "test": "lerna run test --stream",
     "test:watch": "lerna run test:watch --stream",
-    "release": "npm run test && lerna publish"
+    "release": "lerna publish"
   },
   "devDependencies": {
-    "lerna": "3.15.0"
+		"lerna": "^2.11.0"
   }
 }

@@ -1,7 +1,17 @@
 {
   "packages": [
-    "examples/*",
     "packages/*"
   ],
-  "version": "1.0.0-alpha.3"
+  "command": {
+    "version": {
+      "allowBranch": "master",
+      "includeMergedTags": true
+    },
+    "publish": {
+      "registry": "https://registry.npmjs.org/",
+      "access": "public"
+    }
+  },
+  "version": "independent",
+  "lerna": "2.11.0"
 }
